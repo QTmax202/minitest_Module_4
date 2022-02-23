@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Update Product</title>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+          integrity="sha512-Fo3rlrZj/k7ujTnHg4CGR2D7kSs0v4LLanw2qksYuRlEzO+tcaEPQogQ0KaoGN26/zrn20ImR1DfuLWnOo7aBA=="
+          crossorigin="anonymous" referrerpolicy="no-referrer"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css"
+          integrity="sha512-NhSC1YmyruXifcj/KFRWoC561YpHpc5Jtzgvbuzx5VozKpWvQ+4nXhPdFgmx8xqexRcpAglTj9sIBWINXa8x5w=="
+          crossorigin="anonymous" referrerpolicy="no-referrer"/>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/js/bootstrap.bundle.min.js"></script>
+</head>
+<body>
+<div class="row">
+    <div class="col-lg-3 col-md-2"></div>
+    <div class="col-lg-6 col-md-8">
+        <h3 class="display-5">Update Product</h3>
+        <div class="card">
+            <div class="card-body row">
+                <form th:action="@{/product/{id}(id=${product.getId()})}" th:object="${product}" method="post" enctype="multipart/form-data">
+                    <table>
+                        <tr>
+                            <th>Name:</th>
+                        </tr>
+                        <tr>
+                            <td>
+                                <input type="text" name="name" size="95" th:field="*{name}"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>Price:</th>
+                        </tr>
+                        <tr>
+                            <td>
+                                <input type="text" name="price" size="95" th:field="*{price}"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>Description:</th>
+                        </tr>
+                        <tr>
+                            <td>
+                                <textarea name="description" id="" cols="95" rows="5"
+                                          th:field="*{description}"></textarea>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>Image:</th>
+                        </tr>
+                        <tr>
+                            <td>
+                                <input type="file" name="image" th:field="@{${file} + ${product.image.getOriginalFilename()}}">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">
+                                <button type="submit" class="btn btn-success">Update</button>
+                                |
+                                <button type="button" class="btn btn-secondary">
+                                    <a th:href="@{/product}" style="color:white">Back</a>
+                                </button>
+                            </td>
+                        </tr>
+                        <tr th:if="${message} != null">
+                            <h5 style="color: #ff0000">Update Product Successful</h5>
+                        </tr>
+                    </table>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-3 col-md-2"></div>
+</div>
+</body>
+</html>
