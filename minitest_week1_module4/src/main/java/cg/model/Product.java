@@ -10,10 +10,12 @@ public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+
     private String name;
     private int price;
     private String description;
-    private transient MultipartFile image;
+    private String image;
+    private transient MultipartFile file;
 
     public int getId() {
         return id;
@@ -47,11 +49,19 @@ public class Product {
         this.description = description;
     }
 
-    public MultipartFile getImage() {
+    public MultipartFile getFile() {
+        return file;
+    }
+
+    public void setFile(MultipartFile file) {
+        this.file = file;
+    }
+
+    public String getImage() {
         return image;
     }
 
-    public void setImage(MultipartFile image) {
+    public void setImage(String image) {
         this.image = image;
     }
 }

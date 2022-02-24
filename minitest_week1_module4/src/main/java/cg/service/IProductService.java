@@ -13,5 +13,5 @@ public interface IProductService {
 
     Product getProduct(int id);
 
-    ArrayList<Product> getProductByName(String name);
+    ArrayList<Product> getAllProductByName(String name);
 }

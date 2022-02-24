@@ -32,11 +32,6 @@ public class ProductController {
     public ModelAndView showProducts() {
         ModelAndView modelAndView = new ModelAndView("list");
         ArrayList<Product> products = productService.getAllProduct();
-        if (products.isEmpty()) {
-            modelAndView.addObject("message", "No products!");
-            modelAndView.addObject("color", "red");
-        }
-        modelAndView.addObject("file", view);
         modelAndView.addObject("products", products);
         return modelAndView;
     }
@@ -44,8 +39,7 @@ public class ProductController {
     @GetMapping("/search")
     public ModelAndView seachProduct(@RequestParam("SearchName") String name){
         ModelAndView modelAndView = new ModelAndView("list");
-        ArrayList<Product> products = productService.getProductByName(name);
-        modelAndView.addObject("file", view);
+        ArrayList<Product> products = productService.getAllProductByName(name);
         modelAndView.addObject("tim", name);
         modelAndView.addObject("products", products);
         return modelAndView;
@@ -68,12 +62,7 @@ public class ProductController {
     public ModelAndView showDetail(@PathVariable("id") int id) {
         ModelAndView modelAndView = new ModelAndView("detail");
         Product product = productService.getProduct(id);
-        if (product != null) {
-            modelAndView.addObject("file", view);
-            modelAndView.addObject("product", product);
-        } else {
-            modelAndView.addObject("message", "Id invalid!");
-        }
+        modelAndView.addObject("product", product);
         return modelAndView;
     }
 
@@ -87,14 +76,15 @@ public class ProductController {
     @PostMapping
     public ModelAndView create(@ModelAttribute Product product) {
         ModelAndView modelAndView = new ModelAndView("create");
-        MultipartFile multipartFile = product.getImage();
+        MultipartFile multipartFile = product.getFile();
         String fileName = multipartFile.getOriginalFilename();
-        Product productCreate = productService.saveProduct(product);
         try {
             FileCopyUtils.copy(product.getImage().getBytes(), new File(fileUpload + fileName));
         } catch (IOException ex) {
             ex.printStackTrace();
         }
+        product.setImage(view + fileName);
+        Product productCreate = productService.saveProduct(product);
         if (productCreate != null) {
             modelAndView.addObject("message", "Create successfully!");
         }
@@ -105,12 +95,8 @@ public class ProductController {
     public ModelAndView editProduct(@PathVariable("id") int id) {
         ModelAndView modelAndView = new ModelAndView("edit");
         Product product = productService.getProduct(id);
-        if (product != null) {
-            modelAndView.addObject("file", "//localhost:8080/image/");
-            modelAndView.addObject("product", product);
-        } else {
-            modelAndView.addObject("message", "Id invalid!");
-        }
+        modelAndView.addObject("file", "//localhost:8080/image/");
+        modelAndView.addObject("product", product);
         return modelAndView;
     }
 
@@ -118,14 +104,16 @@ public class ProductController {
     public ModelAndView edit(@ModelAttribute Product product, @PathVariable int id) {
         ModelAndView modelAndView = new ModelAndView("edit");
         product.setId(id);
-        MultipartFile multipartFile = product.getImage();
+        if (product.getFile().getSize() != 0) {
+        MultipartFile multipartFile = product.getFile();
         String fileName = multipartFile.getOriginalFilename();
         try {
             FileCopyUtils.copy(product.getImage().getBytes(), new File(fileUpload + fileName));
         } catch (IOException ex) {
             ex.printStackTrace();
         }
-        if (product.getImage().getSize() == 0) {
+            product.setImage(view + fileName);
+        } else {
             product.setImage(productService.getProduct(product.getId()).getImage());
         }
         Product productEdit = productService.saveProduct(product);

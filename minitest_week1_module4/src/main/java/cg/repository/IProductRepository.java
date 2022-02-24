@@ -1,17 +1,9 @@
 package cg.repository;
 
 import cg.model.Product;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
 
-import java.util.ArrayList;
-
-public interface IProductRepository {
-    ArrayList<Product> findAll();
-
-    Product saveProduct(Product product);
-
-    Product deleteProduct(int id);
-
-    Product findProductById(int id);
-
-    ArrayList<Product> findProductByName(String name);
+public interface IProductRepository extends CrudRepository<Product, Integer> {
+    Iterable<Product> findAllByNameContaining(String name);
 }

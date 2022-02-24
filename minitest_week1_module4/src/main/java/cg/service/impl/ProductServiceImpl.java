@@ -12,30 +12,38 @@ import java.util.ArrayList;
 public class ProductServiceImpl implements IProductService {
 
     @Autowired
-    private IProductRepository productRepository;
+    private IProductRepository repository;
 
     @Override
     public ArrayList<Product> getAllProduct() {
-        return productRepository.findAll();
+        return (ArrayList<Product>) repository.findAll();
     }
 
     @Override
     public Product saveProduct(Product product) {
-        return productRepository.saveProduct(product);
+        return repository.save(product);
     }
 
     @Override
     public Product deleteProduct(int id) {
-        return productRepository.deleteProduct(id);
+        Product product = getProduct(id);
+        if (product != null) {
+            repository.delete(product);
+            return product;
+        }
+        return null;
     }
 
     @Override
     public Product getProduct(int id) {
-        return productRepository.findProductById(id);
+        if (repository.findById(id).isPresent()) {
+            return repository.findById(id).get();
+        }
+        return null;
     }
 
     @Override
-    public ArrayList<Product> getProductByName(String name) {
-        return productRepository.findProductByName(name);
+    public ArrayList<Product> getAllProductByName(String name) {
+        return (ArrayList<Product>) repository.findAllByNameContaining(name);
     }
 }

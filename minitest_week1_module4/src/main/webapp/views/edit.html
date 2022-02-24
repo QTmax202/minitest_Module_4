@@ -57,7 +57,8 @@
                         </tr>
                         <tr>
                             <td>
-                                <input type="file" name="image" th:field="@{${file} + ${product.image.getOriginalFilename()}}">
+                                <img th:src="@{${product.getImage()}}" alt="lỗi" src=""/>
+                                <input type="file" name="image" th:field="*{file}">
                             </td>
                         </tr>
                         <tr>
