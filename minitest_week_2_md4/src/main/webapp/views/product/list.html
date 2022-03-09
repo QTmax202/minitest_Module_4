@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>
+        List Product
+    </title>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+          integrity="sha512-Fo3rlrZj/k7ujTnHg4CGR2D7kSs0v4LLanw2qksYuRlEzO+tcaEPQogQ0KaoGN26/zrn20ImR1DfuLWnOo7aBA=="
+          crossorigin="anonymous" referrerpolicy="no-referrer"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css"
+          integrity="sha512-NhSC1YmyruXifcj/KFRWoC561YpHpc5Jtzgvbuzx5VozKpWvQ+4nXhPdFgmx8xqexRcpAglTj9sIBWINXa8x5w=="
+          crossorigin="anonymous" referrerpolicy="no-referrer"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/js/bootstrap.bundle.min.js"></script>
+</head>
+<body>
+<div class="row">
+    <div class="col-sm-6">
+        <button type="button" class="btn btn-info" style="margin: 20px">
+            <a th:href="@{/product/create-product}" style="color: white; text-description:none">
+                <i class="fa-solid fa-plus"></i> Add New Product</a>
+        </button>
+         |
+        <button type="button" class="btn btn-primary" style="margin: 20px">
+            <a th:href="@{/product/showCategories}" style="color: white; text-description:none">
+                <i class="fa-solid fa-plus"></i> List Categories</a>
+        </button>
+    </div>
+    <div class="col-sm-2"></div>
+    <div class="col-sm-4">
+        <form class="nav-link d-flex" th:action="@{/product/searchByName}" method="post">
+            <table>
+                <tr>
+                    <td size="30">
+                        <input class="form-control mr-2" type="text" placeholder="Search" name="searchByName">
+                    </td>
+                    <td>
+                        <button class="btn btn-primary ml-2" type="submit" style="color: white"><i class="fa-solid fa-magnifying-glass"></i> Search</button>
+                    </td>
+                </tr>
+            </table>
+        </form>
+    </div>
+</div>
+<div class="card">
+    <h5 class="card-header font-weight-light">
+        <span class="fas fa-tasks fa-fw mr-3"></span>
+        <span><b>Product List</b></span>
+    </h5>
+    <div class="card-body">
+        <div class="table-responsive" th:if="${products.isEmpty() == true}">
+            <h5 th:text="${message}" style="color:red"></h5>
+        </div>
+        <div class="table-responsive" th:if="${products.isEmpty() == false}">
+            <table class="table table-bordered">
+                <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Image</th>
+                    <th>Name</th>
+                    <th>Price</th>
+                    <th>Description</th>
+                    <th>Category</th>
+                    <th>Action</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="product, pk : ${products}">
+<!--                    <td>${product.getId()}</td>-->
+                    <td th:text="${pk.count}"></td>
+                    <td><img th:src="${product.getImageUrl()}" alt="lỗi" src="" height="120" width="120"/></td>
+                    <!--                    <td><a th:href="@{/product/view/{id}(id=${product.getId()})}">${product.getName()}</a></td>-->
+<!--                    <td>${product.getName()}</td>-->
+                    <td>
+                        <a th:href="@{/product/view/__${product.getId()}__}"
+                        style="color:black" th:text="${product.getName()}">
+                        </a>
+                    </td>
+                    <!--                        <td>-->
+                    <!--                            <fmt:setLocale value="vi_VN"/>-->
+                    <!--                            <fmt:formatNumber value="${product.getPrice()}" type="currency"/>-->
+                    <!--                        </td>-->
+                    <td th:text="${product.getPrice()}"></td>
+                    <td th:text="${product.getDescription()}"></td>
+                    <td th:text="${product.getCategory().getName()}"></td>
+                    <td>
+                        <button type="button" class="btn btn-info">
+                            <a style="color: white"
+                               th:href="@{/product/edit-product/{id}(id=${product.getId()})}">
+                                <i class="fa-solid fa-pencil"></i></a>
+                        </button>
+                        |
+                        <button type="button" class="btn btn-danger">
+                            <a style="color: white"
+                               th:href="@{/product/delete-product/{id}(id=${product.getId()})}"
+                               onclick="return confirm('Bạn có chắc chắn muốn xóa sản phẩm này?')">
+                                <i class="fa-solid fa-trash"></i></a>
+                        </button>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div>
+        <a th:if="${products.hasPrevious()}" th:href="@{'/products'(page=${products.number - 1})}">
+            <i class="fa-solid fa-right-from-line"></i>
+        </a>
+        <span th:text="${products.number + 1}"></span>/<span th:text="${products.totalPages}"></span>
+        <a th:if="${products.hasNext()}" th:href="@{'/products'(page=${products.number + 1})}">
+            <i class="fa-solid fa-right-from-line"></i>
+        </a>
+    </div>
+</div>
+</body>
+</html>
